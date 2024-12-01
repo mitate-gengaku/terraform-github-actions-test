@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: dev
+        working-directory: ./dev
 
     steps:
       - uses: actions/checkout@v3
@@ -31,14 +31,10 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         
       - name: Terraform fmt
-        run:  |
-          cd dev
-          terraform fmt -check
+        run: terraform fmt -check
   
       - name: Terraform Validate
-        run:  |
-          cd dev
-          terraform validate
+        run: terraform validate
 
       - name: Terraform init
         run: |
