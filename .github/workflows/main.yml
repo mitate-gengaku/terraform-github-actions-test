@@ -1,0 +1,50 @@
+name: "Terraform CI/CD"
+
+on: 
+  workflow_dispatch:
+  push:
+
+env:
+  AWS_REGION: 'ap-northeast-1'
+  ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_ARN }}
+  BUCKET_NAME: ${{ secrets.S3_BUCKET }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+        
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        
+      - name: Terraform fmt
+        run: terraform fmt -check
+  
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform init
+        run: |
+          cd dev
+          terraform init \
+            -migrate-state \
+            -backend-config="bucket=${{ env.BUCKET_NAME }}" \
+            -backend-config="key=terraform.tfstate" \
+            -backend-config="region=ap-northeast-1"
+
+      - name: Terraform plan
+        run: |
+          terraform plan -out=tfplan
