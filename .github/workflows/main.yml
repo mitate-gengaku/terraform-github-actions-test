@@ -32,7 +32,11 @@ jobs:
 
       - name: Terraform fmt
         run: |
-          terraform fmt
+          terraform fmt -check
+
+      - name: Terraform validate
+        run: |
+          terraform validate
 
       - name: Terraform init
         run: |
