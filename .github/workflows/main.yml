@@ -32,7 +32,6 @@ jobs:
 
       - name: Terraform init
         run: |
-          cd dev
           terraform init \
             -migrate-state \
             -backend-config="bucket=${{ env.BUCKET_NAME }}" \
