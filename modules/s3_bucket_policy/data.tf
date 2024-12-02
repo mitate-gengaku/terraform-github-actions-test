@@ -17,8 +17,7 @@ data "aws_iam_policy_document" "allow_cloudfront_access" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      // values   = ["arn:aws:cloudfront::637423419750:distribution/${aws_cloudfront_distribution.shomotsu_development_distribution.id}"]
-      values = ["arn:aws:cloudfront::637423419750:distribution/E277EIQIIC08C8"]
+      values = ["${var.source_arn}"]
     }
   }
 }

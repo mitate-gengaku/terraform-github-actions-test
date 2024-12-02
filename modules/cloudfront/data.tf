@@ -5,5 +5,5 @@ provider "aws" {
 
 data "aws_acm_certificate" "s3_acm" {
   provider = aws.use1
-  domain = "images.shomotsu.net"
+  domain = var.image_acm_domain
 }

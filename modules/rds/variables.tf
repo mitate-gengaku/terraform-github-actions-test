@@ -30,3 +30,19 @@ variable "tags" {
 variable "db_name" {
   
 }
+
+variable "dbpassword_name" {
+  type = string
+}
+
+variable "rds_username_paramete_name" {
+  type = string
+}
+
+variable "rds_dbname_parameter_name" {
+  type = string
+}
+
+variable "rds_parameter_name" {
+  type = string
+}

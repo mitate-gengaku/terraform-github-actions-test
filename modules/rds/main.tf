@@ -12,36 +12,35 @@ resource "aws_db_instance" "shomotsu_development_mysql_db" {
   instance_class = var.instance_class
   username       = var.username
   password = data.aws_ssm_parameter.dbpassword.value
-  // manage_master_user_password = var.manage_master_user_password
   skip_final_snapshot = var.skip_final_snapshot
   vpc_security_group_ids = [
     var.rds_sg_id
   ]
-  db_name = var.db_name
+  db_name = aws_ssm_parameter.rds_dbname_parameter.value
   db_subnet_group_name = var.subnet_id
   tags = var.tags
 }
 
 data "aws_ssm_parameter" "dbpassword" {
-  name = "/shomotsu/rds/dbpassword"
+  name = var.dbpassword_name
 }
 
 resource "aws_ssm_parameter" "rds_username_parameter" {
-  name = "/shomotsu/rds/username"
+  name = var.rds_username_paramete_name
 
   type = "String"
   value = var.username
 }
 
 resource "aws_ssm_parameter" "rds_dbname_parameter" {
-  name = "/shomotsu/rds/dbname"
+  name = var.rds_dbname_parameter_name
 
   type = "String"
   value = var.db_name
 }
 
 resource "aws_ssm_parameter" "rds_parameter" {
-  name = "/shomotsu/rds/host"
+  name = var.rds_parameter_name
 
   type = "String"
   value = aws_db_instance.shomotsu_development_mysql_db.endpoint

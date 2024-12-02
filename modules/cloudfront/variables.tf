@@ -1,3 +1,7 @@
+variable "image_acm_domain" {
+  type = string 
+}
+
 variable "enabled" {
   default = true
 }

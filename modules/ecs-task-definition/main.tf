@@ -12,12 +12,12 @@ resource "aws_ecs_task_definition" "shomotsu_development_task_definition" {
           environmentFiles = [
             {
               type  = "s3"
-              value = "arn:aws:s3:::test-repository-bucket/.env"
+              value = var.env_s3
             },
           ]
           secrets     = var.secrets
           essential        = true
-          image            = "637423419750.dkr.ecr.ap-northeast-1.amazonaws.com/test-repository-laravel:development.v0.0.0098"
+          image            = var.laravel_container_image
           logConfiguration = {
             logDriver     = "awslogs"
             options       = {
@@ -27,12 +27,12 @@ resource "aws_ecs_task_definition" "shomotsu_development_task_definition" {
               awslogs-stream-prefix = "ecs"
             }
           }
-          name             = "shomotsu_development_laravel_repository"
+          name             = "${var.laravel_container_name}"
           portMappings     = [
             {
               containerPort = 9000
               hostPort      = 9000
-              name          = "shomotsu_development_laravel_repository-9000-tcp"
+              name          = "${var.laravel_container_name}-9000-tcp"
               protocol      = "tcp"
             },
           ]
@@ -40,7 +40,7 @@ resource "aws_ecs_task_definition" "shomotsu_development_task_definition" {
       },
       {
           essential        = true
-          image            = "637423419750.dkr.ecr.ap-northeast-1.amazonaws.com/test-repository-nginx:development.v0.0.0098"
+          image            = var.nginx_container_image
           logConfiguration = {
             logDriver     = "awslogs"
             options       = {
@@ -50,27 +50,27 @@ resource "aws_ecs_task_definition" "shomotsu_development_task_definition" {
                 awslogs-stream-prefix = "ecs"
             }
           }
-          name             = "test-repository-nginx"
+          name             = var.nginx_container_name
           portMappings     = [
             {
               appProtocol   = "http"
               containerPort = 80
               hostPort      = 80
-              name          = "test-repository-nginx-80-tcp"
+              name          = "${var.nginx_container_name}-80-tcp"
               protocol      = "tcp"
             },
           ]
           volumesFrom      = [
             {
               readOnly        = false
-              sourceContainer = "shomotsu_development_laravel_repository"
+              sourceContainer = "${var.laravel_container_name}"
             },
           ]
       },
     ]
   )
   cpu                      = "1024"
-  execution_role_arn       = "arn:aws:iam::637423419750:role/ecsTaskExecutionRole"
+  execution_role_arn       = var.execution_role_arn
   family                   = var.family_name
   ipc_mode                 = null
   memory                   = "3072"
@@ -81,7 +81,7 @@ resource "aws_ecs_task_definition" "shomotsu_development_task_definition" {
   ]
   track_latest = true
   tags                     = var.tags
-  task_role_arn            = "arn:aws:iam::637423419750:role/ECStoS3"
+  task_role_arn            = var.task_role_arn
 
   runtime_platform {
     cpu_architecture        = "X86_64"

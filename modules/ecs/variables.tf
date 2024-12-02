@@ -7,3 +7,7 @@ variable "tags" {}
 variable "target_group_arn" {
   
 }
+
+variable "load_balancer_container_name" {
+  
+}

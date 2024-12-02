@@ -12,7 +12,7 @@ resource "aws_ecs_service" "service" {
 
   load_balancer {
     target_group_arn = var.target_group_arn
-    container_name = "test-repository-nginx"
+    container_name = var.load_balancer_container_name
     container_port = 80
   }
 
