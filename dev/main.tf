@@ -88,14 +88,14 @@ data "aws_route53_zone" "name" {
 
 resource "aws_route53_record" "shomotsu_development_record" {
   zone_id = data.aws_route53_zone.name.zone_id
-  name = "dev.shomotsu.net"
-  type = "A"
+  name    = "dev.shomotsu.net"
+  type    = "A"
 
   allow_overwrite = true
 
   alias {
-    name = module.alb.alb_dns_name
-    zone_id = module.alb.alb_zone_id
+    name                   = module.alb.alb_dns_name
+    zone_id                = module.alb.alb_zone_id
     evaluate_target_health = true
   }
 }
@@ -196,7 +196,7 @@ module "s3_bucket" {
   bucket_name = "shomotsu-development-bucket1"
 
   tags = {
-    Name = "shomotsu-development-bucket1"
+    Name        = "shomotsu-development-bucket1"
     Environment = "development"
   }
 }
@@ -210,7 +210,7 @@ module "s3_ownership" {
 module "s3_bucket_policy" {
   source = "../modules/s3_bucket_policy"
 
-  bucket_id = module.s3_bucket.bucket_id
+  bucket_id  = module.s3_bucket.bucket_id
   bucket_arn = module.s3_bucket.bucket_arn
 }
 
@@ -223,13 +223,13 @@ module "cloudfront" {
 
   enabled = false
 
-  origin_id = module.s3_bucket.bucket_id
-  domain_name = module.s3_bucket.bucket_regional_domain_name
+  origin_id                = module.s3_bucket.bucket_id
+  domain_name              = module.s3_bucket.bucket_regional_domain_name
   origin_access_control_id = module.cloudfront_oac.cloudfront_oac_id
 
   target_origin_id = module.s3_bucket.bucket_id
 
-  geo_restriction_type = "none"
+  geo_restriction_type           = "none"
   cloudfront_default_certificate = false
 
   tags = {
@@ -240,11 +240,11 @@ module "cloudfront" {
 module "cloudfront_oac" {
   source = "../modules/cloudfront_oac"
 
-  name = "shomotsu_development_oac"
-  description = "test oac"
+  name                              = "shomotsu_development_oac"
+  description                       = "test oac"
   origin_access_control_origin_type = "s3"
-  signing_behavior = "always"
-  signing_protocol = "sigv4" 
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 
