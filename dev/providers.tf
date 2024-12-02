@@ -6,6 +6,8 @@ terraform {
     }
   }
   backend "s3" {
+    bucket = "terraform-tfstate-joadfkjeaofhjkdahf"
+    key    = "terraform.tfstate"
     region = "ap-northeast-1"
   }
 }

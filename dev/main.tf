@@ -82,22 +82,13 @@ module "security_group_rule" {
 # Route 53
 ################################################
 
-data "aws_route53_zone" "name" {
-  name = "shomotsu.net."
-}
+module "route53_record" {
+  source = "../modules/route53_record"
 
-resource "aws_route53_record" "shomotsu_development_record" {
-  zone_id = data.aws_route53_zone.name.zone_id
-  name    = "dev.shomotsu.net"
-  type    = "A"
-
-  allow_overwrite = true
-
-  alias {
-    name                   = module.alb.alb_dns_name
-    zone_id                = module.alb.alb_zone_id
-    evaluate_target_health = true
-  }
+  route53_domain_name = var.route53_domain_name
+  domain_name = "dev.shomotsu.net"
+  alb_dns_name = module.alb.alb_dns_name
+  alb_zone_id =  module.alb.alb_zone_id
 }
 
 ################################################
@@ -131,8 +122,12 @@ module "rds" {
   skip_final_snapshot         = true
   rds_sg_id                   = module.security_group.rds_sg_id
   subnet_id                   = module.rds_subnet.rds_subnet_id
-  // db_name = "shomotsu_development_mysql_database"
-  db_name = "database1"
+  db_name = var.db_name
+  
+  dbpassword_name = var.dbpassword_name
+  rds_username_paramete_name = var.rds_username_paramete_name
+  rds_dbname_parameter_name = var.rds_dbname_parameter_name
+  rds_parameter_name = var.rds_parameter_name
 
   tags = {
     Environment = "development"
@@ -212,6 +207,8 @@ module "s3_bucket_policy" {
 
   bucket_id  = module.s3_bucket.bucket_id
   bucket_arn = module.s3_bucket.bucket_arn
+
+  source_arn = var.bucket_source_arn
 }
 
 ################################################
@@ -221,6 +218,7 @@ module "s3_bucket_policy" {
 module "cloudfront" {
   source = "../modules/cloudfront"
 
+  image_acm_domain = var.image_acm_domain
   enabled = false
 
   origin_id                = module.s3_bucket.bucket_id
@@ -281,7 +279,7 @@ module "alb_listener" {
   source = "../modules/alb_listener"
 
   load_balancer_arn = module.alb.alb_arn
-  certificate_arn   = "arn:aws:acm:ap-northeast-1:637423419750:certificate/5d276754-d668-428b-b5f9-b6065c5cb7dd"
+  certificate_arn   = "arn:aws:acm:ap-northeast-1:${var.aws_account_id}:certificate/${var.shomotsu_acm_id}"
   target_group_arn  = module.alb_target_group.target_group_arn
 }
 
@@ -333,6 +331,12 @@ module "ecs_task_definition" {
     },
   ]
 
+  env_s3 = var.env_s3
+  nginx_container_image = var.nginx_container_image
+  laravel_container_image = var.laravel_container_image
+  task_role_arn = var.task_role_arn
+  execution_role_arn = var.execution_role_arn
+
   tags = {
     Environment = "development"
   }
@@ -353,6 +357,8 @@ module "ecs" {
   task_definition_arn = module.ecs_task_definition.task_definition_arn
 
   target_group_arn = module.alb_target_group.target_group_arn
+
+  load_balancer_container_name = module.ecs_task_definition.nginx_container_name
 
   tags = {
     Environment = "development"
