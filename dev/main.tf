@@ -79,6 +79,28 @@ module "security_group_rule" {
 }
 
 ################################################
+# Route 53
+################################################
+
+data "aws_route53_zone" "name" {
+  name = "shomotsu.net."
+}
+
+resource "aws_route53_record" "shomotsu_development_record" {
+  zone_id = data.aws_route53_zone.name.zone_id
+  name = "dev.shomotsu.net"
+  type = "A"
+
+  allow_overwrite = true
+
+  alias {
+    name = module.alb.alb_dns_name
+    zone_id = module.alb.alb_zone_id
+    evaluate_target_health = true
+  }
+}
+
+################################################
 # RDS
 ################################################
 
@@ -167,7 +189,7 @@ module "elasticache" {
 ################################################
 # S3
 ################################################
-/*
+
 module "s3_bucket" {
   source = "../modules/s3"
 
@@ -224,7 +246,7 @@ module "cloudfront_oac" {
   signing_behavior = "always"
   signing_protocol = "sigv4" 
 }
-*/
+
 
 ################################################
 # Application Load Balancer
