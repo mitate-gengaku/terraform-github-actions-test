@@ -25,22 +25,6 @@ jobs:
     defaults:
       run:
         working-directory: ./dev
-    env:
-      TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-      TF_VAR_shomotsu_acm_id: ${{ secrets.SHOMOTSU_ACM_ID }}
-      TF_VAR_image_acm_domain: ${{ secrets.IMAGE_ACM_DOMAIN }}
-      TF_VAR_dbpassword_name: ${{ secrets.DBPASSWORD_NAME }}
-      TF_VAR_db_name: ${{ secrets.DB_NAME }}
-      TF_VAR_rds_username_paramete_name: ${{ secrets.RDS_USERNAME_PARAMETE_NAME }}
-      TF_VAR_rds_dbname_parameter_name: ${{ secrets.RDS_DBNAME_PARAMETER_NAME }}
-      TF_VAR_rds_parameter_name: ${{ secrets.RDS_PARAMETER_NAME }}
-      TF_VAR_route53_domain_name: ${{ secrets.ROUTE53_DOMAIN_NAME }}
-      TF_VAR_bucket_source_arn: ${{ secrets.BUCKET_SOURCE_ARN }}
-      TF_VAR_env_s3: ${{ secrets.ENV_S3 }}
-      TF_VAR_laravel_container_image: ${{ secrets.LARAVEL_CONTAINER_IMAGE }}
-      TF_VAR_nginx_container_image: ${{ secrets.NGINX_CONTAINER_IMAGE }}
-      TF_VAR_execution_role_arn: ${{ secrets.EXECUTION_ROLE_ARN }}
-      TF_VAR_task_role_arn: ${{ secrets.TASK_ROLE_ARN }}
 
     steps:
       - uses: actions/checkout@v3
@@ -71,6 +55,22 @@ jobs:
       - name: Terraform plan
         run: |
           terraform plan -out=tfplan
+        env:
+          TF_VAR_aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+          TF_VAR_shomotsu_acm_id: ${{ secrets.SHOMOTSU_ACM_ID }}
+          TF_VAR_image_acm_domain: ${{ secrets.IMAGE_ACM_DOMAIN }}
+          TF_VAR_dbpassword_name: ${{ secrets.DBPASSWORD_NAME }}
+          TF_VAR_db_name: ${{ secrets.DB_NAME }}
+          TF_VAR_rds_username_paramete_name: ${{ secrets.RDS_USERNAME_PARAMETE_NAME }}
+          TF_VAR_rds_dbname_parameter_name: ${{ secrets.RDS_DBNAME_PARAMETER_NAME }}
+          TF_VAR_rds_parameter_name: ${{ secrets.RDS_PARAMETER_NAME }}
+          TF_VAR_route53_domain_name: ${{ secrets.ROUTE53_DOMAIN_NAME }}
+          TF_VAR_bucket_source_arn: ${{ secrets.BUCKET_SOURCE_ARN }}
+          TF_VAR_env_s3: ${{ secrets.ENV_S3 }}
+          TF_VAR_laravel_container_image: ${{ secrets.LARAVEL_CONTAINER_IMAGE }}
+          TF_VAR_nginx_container_image: ${{ secrets.NGINX_CONTAINER_IMAGE }}
+          TF_VAR_execution_role_arn: ${{ secrets.EXECUTION_ROLE_ARN }}
+          TF_VAR_task_role_arn: ${{ secrets.TASK_ROLE_ARN }}
 
       - name: Terraform apply
         run: |
