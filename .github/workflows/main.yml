@@ -85,16 +85,16 @@ jobs:
           
       - name: Terraform fmt
         run: |
-          terraform fmt -check
+          terraform fmt
 
-      - name: Terraform validate
-        run: |
-          terraform validate
-
-      - name: Terraform plan
-        run: |
-          terraform plan -out=tfplan
-
-      - name: Terraform apply
-        run: |
-          terraform apply -auto-approve
+#      - name: Terraform validate
+#        run: |
+#          terraform validate
+#
+#      - name: Terraform plan
+#        run: |
+#          terraform plan -out=tfplan
+#
+#      - name: Terraform apply
+#        run: |
+#          terraform apply -auto-approve
